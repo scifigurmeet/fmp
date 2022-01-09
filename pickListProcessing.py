@@ -37,11 +37,11 @@ def to_excel(df):
 
 
 fmpMasterFile = pd.read_excel(
-    "C:/Users/scifi/OneDrive/Desktop/FMP_MASTER_DATA_FILE.xlsx",
+    "FMP_MASTER_DATA_FILE.xlsx",
     engine="openpyxl")
 
-st.write("""# Pick List Processing""")
-fmpPicklist = st.file_uploader("Choose Picklist")
+st.write("""# FMP Pick List Processing""")
+fmpPicklist = st.file_uploader("Choose FMP Picklist")
 
 if st.button("Process Picklist"):
     with st.spinner("Getting the Job Done..."):
