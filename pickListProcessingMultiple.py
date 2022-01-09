@@ -33,11 +33,11 @@ def to_excel(df):
 
 
 fmpMasterFile = pd.read_excel(
-    "C:/Users/scifi/OneDrive/Desktop/FMP_MASTER_DATA_FILE.xlsx",
+    "FMP_MASTER_DATA_FILE.xlsx",
     engine="openpyxl")
 
 ambientMasterFile = pd.read_excel(
-    "C:/Users/scifi/OneDrive/Desktop/AMBIENT_MASTER_DATA_FILE.xlsx",
+    "AMBIENT_MASTER_DATA_FILE.xlsx",
     engine="openpyxl")
 
 fmpMasterFile = pd.concat([fmpMasterFile, ambientMasterFile], ignore_index=True)
