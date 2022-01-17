@@ -51,6 +51,8 @@ if st.button("Process Picklist"):
                                         "ProductID": str,
                                         "SingleItemOrderIDList": str,
                                         "MultiItemOrderIDList": str,
+                                        "SingleOrderItemCount": int,
+                                        "MultiOrderItemCount": int,
                                         "Size": str,
                                         "Color": str,
                                         "Product Group/Type": str,
@@ -59,7 +61,8 @@ if st.button("Process Picklist"):
 
         fmpPickList = fmpPickList[[
             "SingleItemOrderIDList", "MultiItemOrderIDList", "ProductID",
-            "Product Group/Type", "Qty", "Color", "Size"
+            "Product Group/Type", "Qty", "Color", "Size",
+            "SingleOrderItemCount", "MultiOrderItemCount"
         ]]
 
         #st.dataframe(fmpPickList)
@@ -90,7 +93,7 @@ if st.button("Process Picklist"):
         fmpPickList["Type"] = [
             str(row["Type"]).upper() for index, row in fmpPickList.iterrows()
         ]
-        
+
         fmpPickList["Size"] = [
             str(row["Size"]).upper() for index, row in fmpPickList.iterrows()
         ]
@@ -106,17 +109,28 @@ if st.button("Process Picklist"):
         fmpCustomMultiOrdersList = fmpCustomList.loc[
             fmpCustomList["MultiItemOrderIDList"].notna()]
 
+        fmpCustomSingleOrdersList["Qty"] = fmpCustomSingleOrdersList[
+            "SingleOrderItemCount"]
+        fmpCustomMultiOrdersList["Qty"] = fmpCustomMultiOrdersList[
+            "MultiOrderItemCount"]
+
         fmpCustomSingleOrdersList.rename(columns={"SingleItemOrderIDList": "OrderID"},
                                         inplace=True)
         fmpCustomMultiOrdersList.rename(columns={"MultiItemOrderIDList": "OrderID"},
                                         inplace=True)
         fmpCustomSingleOrdersList.drop(columns=["MultiItemOrderIDList"], inplace=True)
         fmpCustomMultiOrdersList.drop(columns=["SingleItemOrderIDList"], inplace=True)
+        fmpCustomSingleOrdersList.drop(
+            columns=["SingleOrderItemCount", "MultiOrderItemCount"],
+            inplace=True)
+        fmpCustomMultiOrdersList.drop(
+            columns=["SingleOrderItemCount", "MultiOrderItemCount"],
+            inplace=True)
 
         fmpCustomSingleOrdersSmallSizesList = fmpCustomSingleOrdersList.loc[
             fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' x 2.25'"
+                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersSmallSizesListSorted = fmpCustomSingleOrdersSmallSizesList.sort_values(
@@ -129,7 +143,7 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersList.loc[
             ~fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' x 2.25'"
+                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersOtherSizesListSorted = fmpCustomSingleOrdersOtherSizesList.sort_values(
