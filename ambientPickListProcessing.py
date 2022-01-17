@@ -51,6 +51,8 @@ if st.button("Process Picklist"):
                                         "ProductID": str,
                                         "SingleItemOrderIDList": str,
                                         "MultiItemOrderIDList": str,
+                                        "SingleOrderItemCount": int,
+                                        "MultiOrderItemCount": int,
                                         "Size": str,
                                         "Color": str,
                                         "Product Group/Type": str,
@@ -59,7 +61,7 @@ if st.button("Process Picklist"):
 
         fmpPickList = fmpPickList[[
             "SingleItemOrderIDList", "MultiItemOrderIDList", "ProductID",
-            "Product Group/Type", "Qty", "Color", "Size"
+            "Product Group/Type", "Qty", "Color", "Size", "SingleOrderItemCount", "MultiOrderItemCount"
         ]]
 
         #st.dataframe(fmpPickList)
