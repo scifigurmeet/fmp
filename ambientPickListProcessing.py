@@ -100,10 +100,11 @@ if st.button("Process Picklist"):
             ["NYLON", "BCF", "FLORIDA"])]
         fmpCustomList = fmpPickList.loc[~fmpPickList["Type"].
                                         isin(["NYLON", "BCF", "FLORIDA"])]
-        fmpCustomSingleOrdersList = fmpCustomList.loc[
-            fmpCustomList["SingleItemOrderIDList"].notna()]
-        fmpCustomMultiOrdersList = fmpCustomList.loc[
-            fmpCustomList["MultiItemOrderIDList"].notna()]
+        fmpCustomSingleOrdersList = fmpCustomList.loc[fmpCustomList["SingleItemOrderIDList"].notna()]
+        fmpCustomMultiOrdersList = fmpCustomList.loc[fmpCustomList["MultiItemOrderIDList"].notna()]
+
+        fmpCustomSingleOrdersList["Qty"] = fmpCustomSingleOrdersList["SingleItemOrderIDList"]
+        fmpCustomMultiOrdersList["Qty"] = fmpCustomMultiOrdersList["MultiItemOrderIDList"]
 
         fmpCustomSingleOrdersList.rename(columns={"SingleItemOrderIDList": "OrderID"},
                                         inplace=True)
@@ -115,7 +116,7 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersSmallSizesList = fmpCustomSingleOrdersList.loc[
             fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' x 2.25'"
+                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersSmallSizesListSorted = fmpCustomSingleOrdersSmallSizesList.sort_values(
@@ -128,7 +129,7 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersList.loc[
             ~fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' x 2.25'"
+                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersOtherSizesListSorted = fmpCustomSingleOrdersOtherSizesList.sort_values(
