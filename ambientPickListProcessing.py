@@ -114,8 +114,8 @@ if st.button("Process Picklist"):
                                         inplace=True)
         fmpCustomSingleOrdersList.drop(columns=["MultiItemOrderIDList"], inplace=True)
         fmpCustomMultiOrdersList.drop(columns=["SingleItemOrderIDList"], inplace=True)
-        fmpCustomSingleOrdersList.drop(columns=["SingleOrderItemCount"], inplace=True)
-        fmpCustomMultiOrdersList.drop(columns=["MultiOrderItemCount"], inplace=True)
+        fmpCustomSingleOrdersList.drop(columns=["SingleOrderItemCount", "MultiOrderItemCount"], inplace=True)
+        fmpCustomMultiOrdersList.drop(columns=["SingleOrderItemCount", "MultiOrderItemCount"], inplace=True)
 
         fmpCustomSingleOrdersSmallSizesList = fmpCustomSingleOrdersList.loc[
             fmpCustomSingleOrdersList["Size"].isin([
