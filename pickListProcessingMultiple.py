@@ -55,6 +55,8 @@ if st.button("Process Picklist"):
                                         "ProductID": str,
                                         "SingleItemOrderIDList": str,
                                         "MultiItemOrderIDList": str,
+                                        "SingleOrderItemCount": int,
+                                        "MultiOrderItemCount": int,
                                         "Size": str,
                                         "Color": str,
                                         "Product Group/Type": str,
@@ -80,7 +82,8 @@ if st.button("Process Picklist"):
 
         fmpPickList = fmpPickList[[
             "SingleItemOrderIDList", "MultiItemOrderIDList", "ProductID",
-            "Product Group/Type", "Qty", "Color", "Size", "Company"
+            "Product Group/Type", "Qty", "Color", "Size", "Company",
+            "SingleOrderItemCount", "MultiOrderItemCount"
         ]]
 
         #st.dataframe(fmpPickList)
@@ -115,10 +118,10 @@ if st.button("Process Picklist"):
         ]]
 
         fmpPickList["Type"] = [
-            row["Type"].upper() for index, row in fmpPickList.iterrows()
+            str(row["Type"]).upper() for index, row in fmpPickList.iterrows()
         ]
         fmpPickList["Size"] = [
-            row["Size"].upper() for index, row in fmpPickList.iterrows()
+            str(row["Size"]).upper() for index, row in fmpPickList.iterrows()
         ]
 
         #st.dataframe(fmpPickList)
@@ -132,17 +135,24 @@ if st.button("Process Picklist"):
         fmpCustomMultiOrdersList = fmpCustomList.loc[
             fmpCustomList["MultiItemOrderIDList"].notna()]
 
+        fmpCustomSingleOrdersList["Qty"] = fmpCustomSingleOrdersList[
+            "SingleOrderItemCount"]
+        fmpCustomMultiOrdersList["Qty"] = fmpCustomMultiOrdersList[
+            "MultiOrderItemCount"]
+
         fmpCustomSingleOrdersList.rename(columns={"SingleItemOrderIDList": "OrderID"},
                                         inplace=True)
         fmpCustomMultiOrdersList.rename(columns={"MultiItemOrderIDList": "OrderID"},
                                         inplace=True)
         fmpCustomSingleOrdersList.drop(columns=["MultiItemOrderIDList"], inplace=True)
         fmpCustomMultiOrdersList.drop(columns=["SingleItemOrderIDList"], inplace=True)
+        fmpCustomSingleOrdersList.drop(columns=["SingleOrderItemCount", "MultiOrderItemCount"], inplace=True)
+        fmpCustomMultiOrdersList.drop(columns=["SingleOrderItemCount", "MultiOrderItemCount"], inplace=True)
 
         fmpCustomSingleOrdersSmallSizesList = fmpCustomSingleOrdersList.loc[
             fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' x 2.25'"
+                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersSmallSizesListSorted = fmpCustomSingleOrdersSmallSizesList.sort_values(
@@ -155,7 +165,7 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersList.loc[
             ~fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' x 2.25'"
+                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersOtherSizesListSorted = fmpCustomSingleOrdersOtherSizesList.sort_values(
@@ -166,46 +176,6 @@ if st.button("Process Picklist"):
             ])
 
         fmpCustomMultiOrdersList = fmpCustomMultiOrdersList.sort_values(by=["OrderID"])
-
-        # st.write(f"Cut Pieces ({fmpCutPiecesList.shape[0]})")
-        # st.dataframe(fmpCutPiecesList)
-
-        # st.write(f"Custom ({fmpCustomList.shape[0]})")
-        # st.dataframe(fmpCustomList)
-
-        # st.write(f"Custom Single Orders ({fmpCustomSingleOrdersList.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersList)
-
-        # st.write(f"Custom Single Orders Small Sizes List ({fmpCustomSingleOrdersSmallSizesList.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersSmallSizesList)
-
-        # st.write(f"Custom Single Orders Small Sizes List Sorted ({fmpCustomSingleOrdersSmallSizesListSorted.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersSmallSizesListSorted)
-
-        # st.write(f"Custom Single Orders Other Sizes List ({fmpCustomSingleOrdersOtherSizesList.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersOtherSizesList)
-
-        # st.write(f"Custom Single Orders Other Sizes List Sorted ({fmpCustomSingleOrdersOtherSizesListSorted.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersOtherSizesListSorted)
-
-        # st.write(f"Custom Multi Orders ({fmpCustomMultiOrdersList.shape[0]})")
-        # st.dataframe(fmpCustomMultiOrdersList)
-
-    # st.download_button(label='✔️ Custom Single Orders Small Sizes List',
-    #                 data=to_excel(fmpCustomSingleOrdersSmallSizesListSorted),
-    #                 file_name='Custom_Single_Orders_Small_Sizes_List.xlsx')
-
-    # st.download_button(label='✔️ Custom Single Orders Other Sizes List',
-    #                 data=to_excel(fmpCustomSingleOrdersOtherSizesListSorted),
-    #                 file_name='Custom_Single_Orders_Other_Sizes_List.xlsx')
-
-    # st.download_button(label='✔️ Custom Multi Orders List',
-    #                 data=to_excel(fmpCustomMultiOrdersList),
-    #                 file_name='Custom_Multi_Orders_List.xlsx')
-
-    # st.download_button(label='✔️ Cut Pieces List',
-    #                 data=to_excel(fmpCutPiecesList),
-    #                 file_name='Cut_Pieces_List.xlsx')
 
     t = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
 
