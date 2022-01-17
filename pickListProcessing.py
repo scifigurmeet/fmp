@@ -87,9 +87,12 @@ if st.button("Process Picklist"):
         fmpPickList["Inspection"] = ""
         fmpPickList["Label"] = ""
 
-        fmpPickList["Type"] = [
-            row["Type"].upper() for index, row in fmpPickList.iterrows()
-        ]
+        try:
+            fmpPickList["Type"] = [
+                row["Type"].upper() for index, row in fmpPickList.iterrows()
+            ]
+        except Exception as ex:
+            st.text(ex)
         fmpPickList["Size"] = [
             row["Size"].upper() for index, row in fmpPickList.iterrows()
         ]
