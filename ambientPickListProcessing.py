@@ -103,8 +103,8 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersList = fmpCustomList.loc[fmpCustomList["SingleItemOrderIDList"].notna()]
         fmpCustomMultiOrdersList = fmpCustomList.loc[fmpCustomList["MultiItemOrderIDList"].notna()]
 
-        fmpCustomSingleOrdersList["Qty"] = fmpCustomSingleOrdersList["SingleItemOrderIDList"]
-        fmpCustomMultiOrdersList["Qty"] = fmpCustomMultiOrdersList["MultiItemOrderIDList"]
+        fmpCustomSingleOrdersList["Qty"] = fmpCustomSingleOrdersList["SingleOrderItemCount"]
+        fmpCustomMultiOrdersList["Qty"] = fmpCustomMultiOrdersList["MultiOrderItemCount"]
 
         fmpCustomSingleOrdersList.rename(columns={"SingleItemOrderIDList": "OrderID"},
                                         inplace=True)
