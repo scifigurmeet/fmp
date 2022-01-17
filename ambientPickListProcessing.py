@@ -88,10 +88,10 @@ if st.button("Process Picklist"):
         fmpPickList["Label"] = ""
 
         fmpPickList["Type"] = [
-            row["Type"].upper() for index, row in fmpPickList.iterrows()
+            str(row["Type"]).upper() for index, row in fmpPickList.iterrows()
         ]
         fmpPickList["Size"] = [
-            row["Size"].upper() for index, row in fmpPickList.iterrows()
+            str(row["Size"]).upper() for index, row in fmpPickList.iterrows()
         ]
 
         #st.dataframe(fmpPickList)
@@ -139,49 +139,6 @@ if st.button("Process Picklist"):
             ])
 
         fmpCustomMultiOrdersList = fmpCustomMultiOrdersList.sort_values(by=["OrderID"])
-
-        # st.write(f"Cut Pieces ({fmpCutPiecesList.shape[0]})")
-        # st.dataframe(fmpCutPiecesList)
-
-        # st.write(f"Custom ({fmpCustomList.shape[0]})")
-        # st.dataframe(fmpCustomList)
-
-        # st.write(f"Custom Single Orders ({fmpCustomSingleOrdersList.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersList)
-
-        # st.write(f"Custom Single Orders Small Sizes List ({fmpCustomSingleOrdersSmallSizesList.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersSmallSizesList)
-
-        # st.write(f"Custom Single Orders Small Sizes List Sorted ({fmpCustomSingleOrdersSmallSizesListSorted.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersSmallSizesListSorted)
-
-        # st.write(f"Custom Single Orders Other Sizes List ({fmpCustomSingleOrdersOtherSizesList.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersOtherSizesList)
-
-        # st.write(f"Custom Single Orders Other Sizes List Sorted ({fmpCustomSingleOrdersOtherSizesListSorted.shape[0]})")
-        # st.dataframe(fmpCustomSingleOrdersOtherSizesListSorted)
-
-        # st.write(f"Custom Multi Orders ({fmpCustomMultiOrdersList.shape[0]})")
-        # st.dataframe(fmpCustomMultiOrdersList)
-
-        # st.info("Process Complered")
-        # st.download_button(label='✔️ Custom Single Orders Small Sizes List',
-        #                    data=to_excel(fmpCustomSingleOrdersSmallSizesListSorted),
-        #                    file_name='Custom_Single_Orders_Small_Sizes_List.xlsx')
-
-        # st.download_button(label='✔️ Custom Single Orders Other Sizes List',
-        #                    data=to_excel(fmpCustomSingleOrdersOtherSizesListSorted),
-        #                    file_name='Custom_Single_Orders_Other_Sizes_List.xlsx')
-
-        # st.download_button(label='✔️ Custom Multi Orders List',
-        #                    data=to_excel(fmpCustomMultiOrdersList),
-        #                    file_name='Custom_Multi_Orders_List.xlsx')
-
-        # st.download_button(label='✔️ Cut Pieces List',
-        #                    data=to_excel(fmpCutPiecesList),
-        #                    file_name='Cut_Pieces_List.xlsx')
-
-
 
     t = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
 
