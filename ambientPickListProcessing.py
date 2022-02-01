@@ -66,6 +66,9 @@ if st.button("Process Picklist"):
 
         #st.dataframe(fmpPickList)
 
+        fmpMasterFile["ProductID"] = fmpMasterFile["ProductID"].str.upper()
+        fmpPickList["ProductID"] = fmpPickList["ProductID"].str.upper()
+
         for index, row in fmpPickList.iterrows():
             fmpMasterFileRow = fmpMasterFile.loc[fmpMasterFile["ProductID"] ==
                                                 row["ProductID"]]
