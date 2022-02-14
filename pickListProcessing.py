@@ -71,6 +71,7 @@ if st.button("Process Picklist"):
         fmpPickList["ProductID"] = fmpPickList["ProductID"].str.upper()
 
         for index, row in fmpPickList.iterrows():
+            st.text(f"Processing {row['ProductID']}")
             fmpMasterFileRow = fmpMasterFile.loc[fmpMasterFile["ProductID"] ==
                                                 row["ProductID"]]
             Type = fmpMasterFileRow["ProductGroupName"].values[0]
