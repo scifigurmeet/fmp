@@ -123,7 +123,7 @@ if st.button("Process Picklist"):
 
         fmpCustomSingleOrdersSmallSizesList = fmpCustomSingleOrdersList.loc[
             fmpCustomSingleOrdersList["Size"].isin([
-                "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
+                "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'", "2' X 6'", "3' X 5'", "4' X 6'",
                 '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
@@ -137,7 +137,8 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersList.loc[
             ~fmpCustomSingleOrdersList["Size"].isin([
                 "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                '18" X 36" HALF ROUND', '20" X 40" HALF ROUND', "1.5' X 2.25'"
+                "2' X 6'", "3' X 5'", "4' X 6'", '18" X 36" HALF ROUND',
+                '20" X 40" HALF ROUND', "1.5' X 2.25'"
             ])]
 
         fmpCustomSingleOrdersOtherSizesListSorted = fmpCustomSingleOrdersOtherSizesList.sort_values(
