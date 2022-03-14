@@ -36,7 +36,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 14,
+                'font_size': 12,
                 "border": 1,
                 'align': 'center',
                 'valign': 'vcenter'
