@@ -31,7 +31,7 @@ def to_excel(df, text):
                                          startrow=1)
         worksheet = writer.sheets[sheetName]
         worksheet.merge_range(
-            'A1:D1', f'AMBIENT - {text}',
+            'A1:E1', f'AMBIENT - {text}',
             workbook.add_format({
                 'bold': True,
                 "border": 1,
@@ -42,7 +42,7 @@ def to_excel(df, text):
                 'valign': 'vcenter'
             }))
         worksheet.merge_range(
-            'E1:F1', f'{time.strftime("%d-%m-%Y", time.localtime())}',
+            'F1:G1', f'{time.strftime("%d-%m-%Y", time.localtime())}',
             workbook.add_format({
                 'bold': True,
                 "border": 1,
@@ -52,7 +52,7 @@ def to_excel(df, text):
                 'valign': 'vcenter'
             }))
         worksheet.merge_range(
-            'G1:H1', f'{number}',
+            'H1:H1', f'{number}',
             workbook.add_format({
                 'bold': True,
                 "border": 1,
