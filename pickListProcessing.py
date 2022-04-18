@@ -33,7 +33,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 18,
+                'font_size': 14,
                 "border": 1,
                 'align': 'center',
                 'valign': 'vcenter'
@@ -44,7 +44,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 18,
+                'font_size': 14,
                 'align': 'center',
                 'valign': 'vcenter'
             }))
@@ -54,7 +54,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 18,
+                'font_size': 14,
                 'align': 'center',
                 'valign': 'vcenter'
             }))
@@ -62,6 +62,7 @@ def to_excel(df, text):
             "border": 1,
             "border_color": "black",
             "bold": True,
+            "font_size": 18,
             "align": "center",
             "valign": "vcenter",
         })
