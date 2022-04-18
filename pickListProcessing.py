@@ -33,7 +33,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 14,
+                'font_size': 18,
                 "border": 1,
                 'align': 'center',
                 'valign': 'vcenter'
@@ -44,7 +44,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 14,
+                'font_size': 18,
                 'align': 'center',
                 'valign': 'vcenter'
             }))
@@ -54,7 +54,7 @@ def to_excel(df, text):
                 'bold': True,
                 "border": 1,
                 "border_color": "black",
-                'font_size': 14,
+                'font_size': 18,
                 'align': 'center',
                 'valign': 'vcenter'
             }))
@@ -68,7 +68,7 @@ def to_excel(df, text):
         })
         worksheet.set_default_row(height=31.5)
         for i, width in enumerate(get_col_widths(df)):
-            worksheet.set_column(i - 1, i - 1, width*1.39 + 2, format)
+            worksheet.set_column(i - 1, i - 1, width*1.61 + 2, format)
     writer.save()
     processed_data = output.getvalue()
     return processed_data
