@@ -68,7 +68,7 @@ def to_excel(df, text):
         })
         worksheet.set_default_row(height=31.5)
         for i, width in enumerate(get_col_widths(df)):
-            worksheet.set_column(i - 1, i - 1, width + 2, format)
+            worksheet.set_column(i - 1, i - 1, width*1.39 + 2, format)
     writer.save()
     processed_data = output.getvalue()
     return processed_data
