@@ -148,7 +148,7 @@ if st.button("Process Picklist"):
         fmpCutPiecesList = fmpPickList.loc[fmpPickList["Type"].isin(
             ["NYLON", "BCF", "FLORIDA"])]
         fmpCustomList = fmpPickList.loc[~fmpPickList["Type"].
-                                        isin(["NYLON", "BCF", "FLORIDA"])]
+                                        isin(["NYLON", "BCF", "FLORIDA", "UTTERMOST", "BUTLER"])]
         fmpCustomSingleOrdersList = fmpCustomList.loc[
             fmpCustomList["SingleItemOrderIDList"].notna()]
         fmpCustomMultiOrdersList = fmpCustomList.loc[
