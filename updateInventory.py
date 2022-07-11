@@ -1,19 +1,29 @@
 import pandas as pd
 from woocommerce import API
 import concurrent.futures
-
+from pprint import pprint
 def update_inventory(sku, stock):
     global wcapi
     global count
     data = wcapi.get("products?sku=" + sku).json()
     if len(data) != 0 and "id" in data[0]:
         data = data[0]
-        productID = data['id']
-        oldStock = data['stock_quantity']
-        response = wcapi.put(f"products/{productID}", {
-            "manage_stock": True,
-            "stock_quantity": stock
-        }).json()
+        type = data["type"]
+        if type == "simple":
+            productID = data['id']
+            oldStock = data['stock_quantity']
+            response = wcapi.put(f"products/{productID}", {
+                "manage_stock": True,
+                "stock_quantity": int(stock)
+            }).json()
+        elif type == "variation":
+            productID = data['parent_id']
+            variationID = data['id']
+            oldStock = data['stock_quantity']
+            response = wcapi.put(f"products/{productID}/variations/{variationID}", {
+                "manage_stock": True,
+                "stock_quantity": int(stock)
+            }).json()
         if "id" in response:
             newStock = response['stock_quantity']
             print(
@@ -34,12 +44,14 @@ wcapi = API(url="https://furnishmyplace.com",
             version="wc/v3",
             timeout=100)
 
-uploaded_file = "C:/Users/scifi/OneDrive/Desktop/butlerInventory.csv"
+uploaded_file = "C:/Users/scifi/OneDrive/Desktop/radici.csv"
 
 if uploaded_file is not None:
     count = 0
     df = pd.read_csv(uploaded_file)
     total = df.shape[0]
+    # update_inventory(df['SKU'][369], df['Stock'][369])
+    # exit()
     if 'SKU' in df.columns and 'Stock' in df.columns:
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(update_inventory, [row["SKU"] for index, row in df.iterrows()], [row["Stock"] for index, row in df.iterrows()])
