@@ -5,6 +5,7 @@ import base64
 import time
 import math
 
+
 def get_col_widths(dataframe):
     # First we find the maximum length of the index column
     idx_max = max([len(str(s)) for s in dataframe.index.values] +
@@ -21,11 +22,14 @@ def to_excel(df, text):
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     workbook = writer.book
-    numberOfSheets = math.ceil(df.shape[0]/12)
-    for i in range(1, numberOfSheets+1):
+    numberOfSheets = math.ceil(df.shape[0] / 12)
+    for i in range(1, numberOfSheets + 1):
         number += 1
         sheetName = 'Sheet ' + str(i)
-        df[(i-1)*12:i*12].to_excel(writer, index=False, sheet_name=sheetName, startrow=1)
+        df[(i - 1) * 12:i * 12].to_excel(writer,
+                                         index=False,
+                                         sheet_name=sheetName,
+                                         startrow=1)
         worksheet = writer.sheets[sheetName]
         worksheet.merge_range(
             'A1:D1', f'FMP - {text}',
@@ -68,7 +72,7 @@ def to_excel(df, text):
         })
         worksheet.set_default_row(height=31.5)
         for i, width in enumerate(get_col_widths(df)):
-            worksheet.set_column(i - 1, i - 1, width*1.61 + 2, format)
+            worksheet.set_column(i - 1, i - 1, width * 1.61 + 2, format)
     writer.save()
     processed_data = output.getvalue()
     return processed_data
@@ -79,7 +83,9 @@ fmpMasterFile = pd.read_excel("FMP_MASTER_DATA_FILE_14_03_2022-Updated.xlsx",
 
 st.write("""# FMP Pick List Processing""")
 
-number = st.number_input("Enter Last Page Number", min_value=1, max_value=1000000000)
+number = st.number_input("Enter Last Page Number",
+                         min_value=1,
+                         max_value=1000000000)
 
 fmpPicklist = st.file_uploader("Choose FMP Picklist")
 
@@ -109,6 +115,40 @@ if st.button("Process Picklist"):
 
         fmpMasterFile["ProductID"] = fmpMasterFile["ProductID"].str.upper()
         fmpPickList["ProductID"] = fmpPickList["ProductID"].str.upper()
+
+        def processTheSide(length):
+            if "'" in length and '"' in length:
+                foot = float(length.split("'")[0].strip())
+                inch = float(length.split("'")[1].split("\"")[0].strip())
+                length = foot + (inch / 12)
+                return length
+            if "'" in length and '"' not in length:
+                foot = float(length.split("'")[0].strip())
+                length = foot
+                return length
+            if "'" not in length and '"' in length:
+                inch = float(length.split("\"")[0].strip())
+                length = inch / 12
+                return length
+            return 100
+
+        def processLength(size):
+            size = size.strip().upper()
+            if "X" in size and "HEX" not in size:
+                length = processTheSide(size.split("X")[0].strip())
+                width = processTheSide(size.split("X")[1].strip())
+            else:
+                length = processTheSide(size.split(" ")[0].strip())
+                width = processTheSide(size.split(" ")[0].strip())
+            if length <= 4 and width <= 6:
+                return "S"
+            else:
+                return "L"
+
+        fmpPickList["SizeType"] = [
+            processLength(row["Size"])
+            for index, row in fmpPickList.iterrows()
+        ]
 
         for index, row in fmpPickList.iterrows():
             st.text(f"Processing {row['ProductID']}")
@@ -147,8 +187,8 @@ if st.button("Process Picklist"):
 
         fmpCutPiecesList = fmpPickList.loc[fmpPickList["Type"].isin(
             ["NYLON", "BCF", "FLORIDA"])]
-        fmpCustomList = fmpPickList.loc[~fmpPickList["Type"].
-                                        isin(["NYLON", "BCF", "FLORIDA", "UTTERMOST", "BUTLER"])]
+        fmpCustomList = fmpPickList.loc[~fmpPickList["Type"].isin(
+            ["NYLON", "BCF", "FLORIDA", "UTTERMOST", "BUTLER"])]
         fmpCustomSingleOrdersList = fmpCustomList.loc[
             fmpCustomList["SingleItemOrderIDList"].notna()]
         fmpCustomMultiOrdersList = fmpCustomList.loc[
@@ -175,11 +215,7 @@ if st.button("Process Picklist"):
             inplace=True)
 
         fmpCustomSingleOrdersSmallSizesList = fmpCustomSingleOrdersList.loc[
-            fmpCustomSingleOrdersList["Size"].isin([
-                "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                "2' X 6'", "3' X 5'", "4' X 6'", '18" X 36" HALF ROUND',
-                '20" X 40" HALF ROUND', "1.5' X 2.25'"
-            ])]
+            fmpCustomSingleOrdersList["SizeType"].isin(["S"])]
 
         fmpCustomSingleOrdersSmallSizesListSorted = fmpCustomSingleOrdersSmallSizesList.sort_values(
             by=[
@@ -189,11 +225,7 @@ if st.button("Process Picklist"):
             ])
 
         fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersList.loc[
-            ~fmpCustomSingleOrdersList["Size"].isin([
-                "2' ROUND", "3' ROUND", "4' ROUND", "2' X 3'", "2' X 4'",
-                "2' X 6'", "3' X 5'", "4' X 6'", '18" X 36" HALF ROUND',
-                '20" X 40" HALF ROUND', "1.5' X 2.25'"
-            ])]
+            ~fmpCustomSingleOrdersList["SizeType"].isin(["S"])]
 
         fmpCustomSingleOrdersOtherSizesListSorted = fmpCustomSingleOrdersOtherSizesList.sort_values(
             by=[
@@ -204,6 +236,12 @@ if st.button("Process Picklist"):
 
         fmpCustomMultiOrdersList = fmpCustomMultiOrdersList.sort_values(
             by=["OrderID"])
+
+    fmpCustomSingleOrdersSmallSizesListSorted.drop(columns=["SizeType"],
+                                                   inplace=True)
+    fmpCustomSingleOrdersOtherSizesListSorted.drop(columns=["SizeType"],
+                                                   inplace=True)
+    fmpCustomMultiOrdersList.drop(columns=["SizeType"], inplace=True)
 
     t = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
 
