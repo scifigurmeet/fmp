@@ -30,7 +30,47 @@ def to_excel(df, text):
                                          index=False,
                                          sheet_name=sheetName,
                                          startrow=1)
+        stickers = pd.DataFrame()
+        #define new dataFrame with 2 columns A and B
+        stickers = pd.DataFrame(columns=['First Column', 'Second Column'])
+        boxes = []
+        for index, row in df[(i - 1) * 12:i * 12].iterrows():
+            box = row["Type"].strip().title() + "\n" + row["Color"].strip(
+            ).title() + "\n" + row["Size"].strip().title()
+            for i in range(1, int(row["Qty"]) + 1):
+                boxes.append(box)
+        count = 0
+        for i in range(1, math.ceil(len(boxes)/2) + 1):
+            try:
+                first = boxes[count]
+            except:
+                first = ""
+            try:
+                second = boxes[count + 1]
+            except:
+                second = ""
+            stickers.loc[i] = [first, second]
+            count += 2
+        stickers.to_excel(writer,
+                          index=False,
+                          sheet_name=sheetName + " Stickers",
+                          header=False)
         worksheet = writer.sheets[sheetName]
+        #Stickers
+        stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
+        stickersWorkSheet.set_default_row(height=100)
+        format = workbook.add_format({
+            "border": 1,
+            "border_color": "black",
+            "bold": True,
+            "font_size": 18,
+            "align": "center",
+            "valign": "vcenter",
+            "text_wrap": True
+        })
+        stickersWorkSheet.set_column(0, 0, 45, format)
+        stickersWorkSheet.set_column(1, 1, 45, format)
+
         worksheet.merge_range(
             'A1:D1', f'FMP - {text}',
             workbook.add_format({
@@ -77,10 +117,6 @@ def to_excel(df, text):
     processed_data = output.getvalue()
     return processed_data
 
-
-fmpMasterFile = pd.read_excel("FMP_MASTER_03_08_2022.xlsx",
-                              engine="openpyxl")
-
 st.write("""# FMP Pick List Processing""")
 
 number = st.number_input("Enter Last Page Number",
@@ -104,6 +140,9 @@ if st.button("Process Picklist"):
                                         "Product Group/Type": str,
                                         "Qty": int,
                                     })
+
+        fmpMasterFile = pd.read_excel("FMP_MASTER_03_08_2022.xlsx",
+                                      engine="openpyxl")
 
         fmpPickList = fmpPickList[[
             "SingleItemOrderIDList", "MultiItemOrderIDList", "ProductID",
@@ -187,8 +226,10 @@ if st.button("Process Picklist"):
 
         fmpCutPiecesList = fmpPickList.loc[fmpPickList["Type"].isin(
             ["NYLON", "BCF", "FLORIDA"])]
-        fmpCustomList = fmpPickList.loc[~fmpPickList["Type"].isin(
-            ["NYLON", "BCF", "FLORIDA", "UTTERMOST", "BUTLER", "COLONIAL MILL", "RADICI", "UNITED WEAVER"])]
+        fmpCustomList = fmpPickList.loc[~fmpPickList["Type"].isin([
+            "NYLON", "BCF", "FLORIDA", "UTTERMOST", "BUTLER", "COLONIAL MILL",
+            "RADICI", "UNITED WEAVER"
+        ])]
         fmpCustomSingleOrdersList = fmpCustomList.loc[
             fmpCustomList["SingleItemOrderIDList"].notna()]
         fmpCustomMultiOrdersList = fmpCustomList.loc[
