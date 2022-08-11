@@ -57,9 +57,9 @@ def to_excel(df, text):
         worksheet = writer.sheets[sheetName]
         #Stickers
         stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
-        stickersWorkSheet.set_default_row(height=68)
+        stickersWorkSheet.set_default_row(height=72.5)
         format = workbook.add_format({
-            "border": 1,
+            "border": 0,
             "border_color": "black",
             "bold": True,
             "font_size": 14,
@@ -67,8 +67,8 @@ def to_excel(df, text):
             "valign": "vcenter",
             "text_wrap": True
         })
-        stickersWorkSheet.set_column(0, 0, 45, format)
-        stickersWorkSheet.set_column(1, 1, 45, format)
+        stickersWorkSheet.set_column(0, 0, 55, format)
+        stickersWorkSheet.set_column(1, 1, 55, format)
 
         worksheet.merge_range(
             'A1:D1', f'AMBIENT - {text}',
