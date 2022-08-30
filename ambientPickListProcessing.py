@@ -177,6 +177,9 @@ if st.button("Process Picklist"):
             else:
                 length = processTheSide(size.split(" ")[0].strip())
                 width = processTheSide(size.split(" ")[0].strip())
+            if length == 3:
+                if width == 4 or width == 5:
+                    return "L"
             if length < 4 and width < 6:
                 return "S"
             else:
