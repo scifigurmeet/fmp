@@ -92,7 +92,7 @@ def to_excel(df, text):
                 'valign': 'vcenter'
             }))
         worksheet.merge_range(
-            'G1:H1', f'{number}',
+            'G1:H1', f'A{number}',
             workbook.add_format({
                 'bold': True,
                 "border": 1,
