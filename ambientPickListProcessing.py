@@ -266,7 +266,20 @@ if st.button("Process Picklist"):
         fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersList.loc[
             ~fmpCustomSingleOrdersList["SizeType"].isin(["S"])]
 
+        fmpCustomSingleOrdersOtherSizesListNeyLand = fmpCustomSingleOrdersOtherSizesList.loc[
+            fmpCustomSingleOrdersOtherSizesList["Type"].isin(["NEYLAND"])]
+
+        fmpCustomSingleOrdersOtherSizesList = fmpCustomSingleOrdersOtherSizesList.loc[
+            ~fmpCustomSingleOrdersOtherSizesList["Type"].isin(["NEYLAND"])]
+
         fmpCustomSingleOrdersOtherSizesListSorted = fmpCustomSingleOrdersOtherSizesList.sort_values(
+            by=[
+                "Type",
+                "Color",
+                "Size",
+            ])
+
+        fmpCustomSingleOrdersOtherSizesListNeyLandSorted = fmpCustomSingleOrdersOtherSizesListNeyLand.sort_values(
             by=[
                 "Type",
                 "Color",
@@ -280,6 +293,8 @@ if st.button("Process Picklist"):
                                                    inplace=True)
     fmpCustomSingleOrdersOtherSizesListSorted.drop(columns=["SizeType"],
                                                    inplace=True)
+    fmpCustomSingleOrdersOtherSizesListNeyLandSorted.drop(columns=["SizeType"],
+                                                          inplace=True)
     fmpCustomMultiOrdersList.drop(columns=["SizeType"], inplace=True)
 
     t = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
@@ -289,6 +304,9 @@ if st.button("Process Picklist"):
         unsafe_allow_html=True)
     st.markdown(
         f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersOtherSizesListSorted, "Single Orders Other Sizes")).decode()}" download="Custom_Single_Orders_Other_Sizes_List_{t}.xlsx">✔️ Custom Single Orders Other Sizes List</a>',
+        unsafe_allow_html=True)
+    st.markdown(
+        f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersOtherSizesListNeyLandSorted, "Single Orders Other Sizes Neyland Only")).decode()}" download="Custom_Single_Orders_Other_Sizes_Neyland_Only_List_{t}.xlsx">✔️ Custom Single Orders Other Sizes Neyland Only List</a>',
         unsafe_allow_html=True)
     st.markdown(
         f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomMultiOrdersList, "Multi Orders")).decode()}" download="Custom_Multi_Orders_List_{t}.xlsx">✔️ Custom Multi Orders List</a>',
