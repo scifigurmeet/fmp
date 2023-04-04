@@ -199,7 +199,10 @@ if st.button("Process Picklist"):
             st.text(f"Processing {row['ProductID']}")
             fmpMasterFileRow = fmpMasterFile.loc[fmpMasterFile["ProductID"] ==
                                                  row["ProductID"]]
-            Type = fmpMasterFileRow["ProductGroupName"].values[0]
+            try:
+                Type = fmpMasterFileRow["ProductGroupName"].values[0]
+            except:
+                Type = ""
             Size = fmpMasterFileRow["SIZE"].values[0]
             Color = fmpMasterFileRow["COLOR"].values[0]
             if str(fmpPickList.loc[index, "Product Group/Type"]) == "nan":
