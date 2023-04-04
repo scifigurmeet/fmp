@@ -50,15 +50,16 @@ def to_excel(df, text):
             except:
                 second = ""
             stickers.loc[i] = [first, second]
-            count += 2
+            count += 1
+            #count += 2
         stickers.to_excel(writer,
                           index=False,
                           sheet_name=sheetName + " Stickers",
                           header=False)
         worksheet = writer.sheets[sheetName]
         #Stickers
-        stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
-        stickersWorkSheet.set_default_row(height=71)
+        # stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
+        # stickersWorkSheet.set_default_row(height=71)
         format = workbook.add_format({
             "border": 0,
             "border_color": "black",
@@ -68,8 +69,8 @@ def to_excel(df, text):
             "valign": "vcenter",
             "text_wrap": True
         })
-        stickersWorkSheet.set_column(0, 0, 50, format)
-        stickersWorkSheet.set_column(1, 1, 50, format)
+        # stickersWorkSheet.set_column(0, 0, 50, format)
+        # stickersWorkSheet.set_column(1, 1, 50, format)
 
         worksheet.merge_range(
             'A1:D1', f'FMP - {text}',
@@ -202,17 +203,17 @@ if st.button("Process Picklist"):
             try:
                 Type = fmpMasterFileRow["ProductGroupName"].values[0]
             except:
-                st.text(f"Error Processing {row['ProductID']}")
+                st.warning(f"Error Processing {row['ProductID']}")
                 Type = "UNKNOWN Type"
             try:
                 Size = fmpMasterFileRow["SIZE"].values[0]
             except:
-                st.text(f"Error Processing {row['ProductID']}")
+                st.warning(f"Error Processing {row['ProductID']}")
                 Size = "Unknown Size"
             try:
                 Color = fmpMasterFileRow["COLOR"].values[0]
             except:
-                st.text(f"Error Processing {row['ProductID']}")
+                st.warning(f"Error Processing {row['ProductID']}")
                 Color = "Unknown Color"
             if str(fmpPickList.loc[index, "Product Group/Type"]) == "nan":
                 fmpPickList.loc[index, "Product Group/Type"] = Type
