@@ -202,9 +202,18 @@ if st.button("Process Picklist"):
             try:
                 Type = fmpMasterFileRow["ProductGroupName"].values[0]
             except:
-                Type = ""
-            Size = fmpMasterFileRow["SIZE"].values[0]
-            Color = fmpMasterFileRow["COLOR"].values[0]
+                st.text(f"Error Processing {row['ProductID']}")
+                Type = "UNKNOWN Type"
+            try:
+                Size = fmpMasterFileRow["SIZE"].values[0]
+            except:
+                st.text(f"Error Processing {row['ProductID']}")
+                Size = "Unknown Size"
+            try:
+                Color = fmpMasterFileRow["COLOR"].values[0]
+            except:
+                st.text(f"Error Processing {row['ProductID']}")
+                Color = "Unknown Color"
             if str(fmpPickList.loc[index, "Product Group/Type"]) == "nan":
                 fmpPickList.loc[index, "Product Group/Type"] = Type
             if str(fmpPickList.loc[index, "Size"]) == "nan":
