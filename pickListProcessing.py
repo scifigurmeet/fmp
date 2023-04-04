@@ -52,10 +52,10 @@ def to_excel(df, text):
             stickers.loc[i] = [first, second]
             count += 1
             #count += 2
-        stickers.to_excel(writer,
-                          index=False,
-                          sheet_name=sheetName + " Stickers",
-                          header=False)
+        # stickers.to_excel(writer,
+        #                   index=False,
+        #                   sheet_name=sheetName + " Stickers",
+        #                   header=False)
         worksheet = writer.sheets[sheetName]
         #Stickers
         # stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
