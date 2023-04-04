@@ -172,19 +172,22 @@ if st.button("Process Picklist"):
             return 100
 
         def processLength(size):
-            size = size.strip().upper()
-            if "X" in size and "HEX" not in size:
-                length = processTheSide(size.split("X")[0].strip())
-                width = processTheSide(size.split("X")[1].strip())
-            else:
-                length = processTheSide(size.split(" ")[0].strip())
-                width = processTheSide(size.split(" ")[0].strip())
-            if length == 3:
-                if width == 4 or width == 5:
+            try:
+                size = size.strip().upper()
+                if "X" in size and "HEX" not in size:
+                    length = processTheSide(size.split("X")[0].strip())
+                    width = processTheSide(size.split("X")[1].strip())
+                else:
+                    length = processTheSide(size.split(" ")[0].strip())
+                    width = processTheSide(size.split(" ")[0].strip())
+                if length == 3:
+                    if width == 4 or width == 5:
+                        return "L"
+                if length < 4 and width < 6:
+                    return "S"
+                else:
                     return "L"
-            if length < 4 and width < 6:
-                return "S"
-            else:
+            except:
                 return "L"
 
         fmpPickList["SizeType"] = [
