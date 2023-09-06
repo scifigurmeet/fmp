@@ -23,43 +23,37 @@ def to_excel(df, text):
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     workbook = writer.book
     numberOfSheets = math.ceil(df.shape[0] / 12)
-    for i in range(1, numberOfSheets + 1):
+    dfs = [df[(i - 1) * 12:i * 12] for i in range(1, numberOfSheets + 2)]
+    xo = 0
+    for curr, next in zip(dfs, dfs[1:]):
         number += 1
-        sheetName = 'Sheet ' + str(i)
-        df[(i - 1) * 12:i * 12].to_excel(writer,
-                                         index=False,
-                                         sheet_name=sheetName,
-                                         startrow=1)
-        stickers = pd.DataFrame()
-        # define new dataFrame with 2 columns A and B
-        stickers = pd.DataFrame(columns=['First Column', 'Second Column'])
-        boxes = []
-        for index, row in df[(i - 1) * 12:i * 12].iterrows():
-            box = row["Type"].strip().upper() + "\n" + row["Color"].strip(
-            ).title() + "\n" + row["Size"].strip().title()
-            for i in range(1, int(row["Qty"]) + 1):
-                boxes.append(box)
-        count = 0
-        for i in range(1, math.ceil(len(boxes) / 2) + 1):
-            try:
-                first = boxes[count]
-            except:
-                first = ""
-            try:
-                second = boxes[count + 1]
-            except:
-                second = ""
-            stickers.loc[i] = [first, second]
-            count += 1
-            # count += 2
-        # stickers.to_excel(writer,
-        #                   index=False,
-        #                   sheet_name=sheetName + " Stickers",
-        #                   header=False)
+        xo += 1
+        sheetName = 'Sheet ' + str(xo)
+        last = curr.tail(1).get("OrderID").str.split(",").tolist()
+        first = next.head(1).get("OrderID").str.split(",").tolist()
+        if len(last) > 0 and len(first) > 0:
+            last = set(last[0])
+            first = set(first[0])
+            while len(last.intersection(first)) > 0:
+                first_row = next.iloc[0]
+                next = next.iloc[1:]
+                dfs[xo] = dfs[xo].iloc[1:]
+                curr = curr.append(first_row, ignore_index=True)
+                last = curr.tail(1).get("OrderID").str.split(",").tolist()
+                first = next.head(1).get("OrderID").str.split(",").tolist()
+                if len(last) > 0 and len(first) > 0:
+                    last = set(last[0])
+                    first = set(first[0])
+                else:
+                    last = set()
+                    first = set()
+        if curr.shape[0] == 0:
+            continue
+        curr.to_excel(writer,
+                      index=False,
+                      sheet_name=sheetName,
+                      startrow=1)
         worksheet = writer.sheets[sheetName]
-        # Stickers
-        # stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
-        # stickersWorkSheet.set_default_row(height=71)
         format = workbook.add_format({
             "border": 0,
             "border_color": "black",
@@ -69,8 +63,6 @@ def to_excel(df, text):
             "valign": "vcenter",
             "text_wrap": True
         })
-        # stickersWorkSheet.set_column(0, 0, 50, format)
-        # stickersWorkSheet.set_column(1, 1, 50, format)
 
         worksheet.merge_range(
             'A1:D1', f'FMP - {text}',
@@ -122,7 +114,7 @@ def to_excel(df, text):
 st.write("""# FMP Pick List Processing""")
 
 number = st.number_input("Enter Last Page Number",
-                         min_value=1,
+                         min_value=0,
                          max_value=1000000000)
 
 fmpPicklist = st.file_uploader("Choose FMP Picklist")
@@ -321,18 +313,31 @@ if st.button("Process Picklist"):
 
     t = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
 
-    st.markdown(
-        f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersSmallSizesListSorted, "Single Orders Small Sizes")).decode()}" download="Custom_Single_Orders_Small_Sizes_List_{t}.xlsx">✔️ Custom Single Orders Small Sizes List</a>',
-        unsafe_allow_html=True)
-    st.markdown(
-        f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersOtherSizesListSorted, "Single Orders Other Sizes")).decode()}" download="Custom_Single_Orders_Other_Sizes_List_{t}.xlsx">✔️ Custom Single Orders Other Sizes List</a>',
-        unsafe_allow_html=True)
-    st.markdown(
-        f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersOtherSizesListNeyLandSorted, "Single Orders Other Sizes Neyland Only")).decode()}" download="Custom_Single_Orders_Other_Sizes_Neyland_Only_List_{t}.xlsx">✔️ Custom Single Orders Other Sizes Neyland Only List</a>',
-        unsafe_allow_html=True)
-    st.markdown(
-        f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomMultiOrdersList, "Multi Orders")).decode()}" download="Custom_Multi_Orders_List_{t}.xlsx">✔️ Custom Multi Orders List</a>',
-        unsafe_allow_html=True)
+    if fmpCustomSingleOrdersSmallSizesListSorted.shape[0] > 0:
+        st.markdown(
+            f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersSmallSizesListSorted, "Single Orders Small Sizes")).decode()}" download="Custom_Single_Orders_Small_Sizes_List_{t}.xlsx">✔️ Custom Single Orders Small Sizes List</a>',
+            unsafe_allow_html=True)
+    else:
+        st.warning("No Orders for Single Orders Small Sizes.")
+    if fmpCustomSingleOrdersOtherSizesListSorted.shape[0] > 0:
+        st.markdown(
+            f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersOtherSizesListSorted, "Single Orders Other Sizes")).decode()}" download="Custom_Single_Orders_Other_Sizes_List_{t}.xlsx">✔️ Custom Single Orders Other Sizes List</a>',
+            unsafe_allow_html=True)
+    else:
+        st.warning("No Orders for Single Orders Other Sizes.")
+    if fmpCustomSingleOrdersOtherSizesListNeyLandSorted.shape[0] > 0:
+        st.markdown(
+            f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomSingleOrdersOtherSizesListNeyLandSorted, "Single Orders Other Sizes Neyland Only")).decode()}" download="Custom_Single_Orders_Other_Sizes_Neyland_Only_List_{t}.xlsx">✔️ Custom Single Orders Other Sizes Neyland Only List</a>',
+            unsafe_allow_html=True)
+    else:
+        st.warning("No Orders for Single Orders Other Sizes Neyland Only.")
+    if fmpCustomMultiOrdersList.shape[0] > 0:
+        st.markdown(
+            f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCustomMultiOrdersList, "Multi Orders")).decode()}" download="Custom_Multi_Orders_List_{t}.xlsx">✔️ Custom Multi Orders List</a>',
+            unsafe_allow_html=True)
+    else:
+        st.warning("No Orders for Multi Orders.")
+    st.success(f"The last sheet number is {number}.")
     # st.markdown(
     #     f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCutPiecesList, "Cut Pieces")).decode()}" download="Cut_Pieces_List_{t}.xlsx">✔️ Cut Pieces List</a>',
     #     unsafe_allow_html=True)
