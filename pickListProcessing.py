@@ -31,7 +31,7 @@ def to_excel(df, text):
                                          sheet_name=sheetName,
                                          startrow=1)
         stickers = pd.DataFrame()
-        #define new dataFrame with 2 columns A and B
+        # define new dataFrame with 2 columns A and B
         stickers = pd.DataFrame(columns=['First Column', 'Second Column'])
         boxes = []
         for index, row in df[(i - 1) * 12:i * 12].iterrows():
@@ -51,13 +51,13 @@ def to_excel(df, text):
                 second = ""
             stickers.loc[i] = [first, second]
             count += 1
-            #count += 2
+            # count += 2
         # stickers.to_excel(writer,
         #                   index=False,
         #                   sheet_name=sheetName + " Stickers",
         #                   header=False)
         worksheet = writer.sheets[sheetName]
-        #Stickers
+        # Stickers
         # stickersWorkSheet = writer.sheets[sheetName + " Stickers"]
         # stickersWorkSheet.set_default_row(height=71)
         format = workbook.add_format({
@@ -118,6 +118,7 @@ def to_excel(df, text):
     processed_data = output.getvalue()
     return processed_data
 
+
 st.write("""# FMP Pick List Processing""")
 
 number = st.number_input("Enter Last Page Number",
@@ -151,7 +152,7 @@ if st.button("Process Picklist"):
             "SingleOrderItemCount", "MultiOrderItemCount"
         ]]
 
-        #st.dataframe(fmpPickList)
+        # st.dataframe(fmpPickList)
 
         fmpMasterFile["ProductID"] = fmpMasterFile["ProductID"].str.upper()
         fmpPickList["ProductID"] = fmpPickList["ProductID"].str.upper()
@@ -222,7 +223,7 @@ if st.button("Process Picklist"):
             if str(fmpPickList.loc[index, "Color"]) == "nan":
                 fmpPickList.loc[index, "Color"] = Color
 
-        #st.dataframe(fmpPickList)
+        # st.dataframe(fmpPickList)
 
         fmpPickList.drop(columns=["ProductID"], inplace=True)
 
@@ -241,7 +242,7 @@ if st.button("Process Picklist"):
             str(row["Size"]).upper() for index, row in fmpPickList.iterrows()
         ]
 
-        #st.dataframe(fmpPickList)
+        # st.dataframe(fmpPickList)
 
         fmpCutPiecesList = fmpPickList.loc[fmpPickList["Type"].isin(
             ["NYLON", "BCF", "FLORIDA"])]
