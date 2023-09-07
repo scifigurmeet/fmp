@@ -207,7 +207,11 @@ if st.button("Process Picklist"):
                 Color = fmpMasterFileRow["COLOR"].values[0]
             except:
                 st.warning(f"Error Processing {row['ProductID']}")
-                Color = "Unknown Color"
+                if "RUG PAD" in row["ProductID"].upper():
+                    Color = "RUG PAD"
+                    st.warning(f"RUG PAD added in Color Field for {row['ProductID']}")
+                else:
+                    Color = "Unknown Color"
             if str(fmpPickList.loc[index, "Product Group/Type"]) == "nan":
                 fmpPickList.loc[index, "Product Group/Type"] = Type
             if str(fmpPickList.loc[index, "Size"]) == "nan":
