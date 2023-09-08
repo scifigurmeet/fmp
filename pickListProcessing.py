@@ -241,7 +241,7 @@ if st.button("Process Picklist"):
                 try:
                     if len(itemsFound) > 0:
                         st.success(f'But these items were found in Picklist and were filled accordingly: {itemsFound}')
-                        if len(set(thingsNotFound).intersection(itemsFound)) > 0:
+                        if len(set(thingsNotFound).intersection(itemsFound)) == 0:
                             st.error(f'One or more Items were not found anywhere, neither in master File nor in Picklist: {",".join(list(set(thingsNotFound).intersection(itemsFound)))}')
                     else:
                         st.error(
