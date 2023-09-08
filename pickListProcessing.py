@@ -113,9 +113,14 @@ def to_excel(df, text):
 
 st.write("""# FMP Pick List Processing""")
 
-number = st.number_input("Enter Last Page Number",
-                         min_value=0,
-                         max_value=1000000000)
+try:
+    f = open("fmpListLastPageNumber.txt", "r")
+    number = int(f.read().strip())
+    f.close()
+except:
+    number = 0
+
+number = st.number_input("Enter Last Page Number", value=number, min_value=0, max_value=1000000000)
 
 fmpPicklist = st.file_uploader("Choose FMP Picklist")
 
@@ -376,6 +381,10 @@ if st.button("Process Picklist"):
     else:
         st.warning("No Orders for Multi Orders.")
     st.success(f"The last sheet number is {number}.")
+
+    f = open("fmpListLastPageNumber.txt", "w")
+    f.write(str(number))
+    f.close()
     # st.markdown(
     #     f'<a href="data:application/octet-stream;base64,{base64.b64encode(to_excel(fmpCutPiecesList, "Cut Pieces")).decode()}" download="Cut_Pieces_List_{t}.xlsx">✔️ Cut Pieces List</a>',
     #     unsafe_allow_html=True)
