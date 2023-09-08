@@ -193,33 +193,67 @@ if st.button("Process Picklist"):
             st.text(f"Processing {row['ProductID']}")
             fmpMasterFileRow = fmpMasterFile.loc[fmpMasterFile["ProductID"] ==
                                                  row["ProductID"]]
+            thingsNotFound = []
+            thereWasErrorForThisSKU = False
             try:
                 Type = fmpMasterFileRow["ProductGroupName"].values[0]
             except:
-                st.warning(f"Error Processing {row['ProductID']}")
+                thereWasErrorForThisSKU = True
+                thingsNotFound.append("Type")
                 Type = "UNKNOWN Type"
             try:
                 Size = fmpMasterFileRow["SIZE"].values[0]
             except:
-                st.warning(f"Error Processing {row['ProductID']}")
+                thereWasErrorForThisSKU = True
+                thingsNotFound.append("Size")
                 Size = "Unknown Size"
             try:
                 Color = fmpMasterFileRow["COLOR"].values[0]
             except:
-                st.warning(f"Error Processing {row['ProductID']}")
+                thereWasErrorForThisSKU = True
+                thingsNotFound.append("Color")
                 if "RUG PAD" in row["ProductID"].upper():
                     Color = "RUG PAD"
                     st.warning(f"RUG PAD added in Color Field for {row['ProductID']}")
                 else:
                     Color = "Unknown Color"
+            itemsFound = []
             if str(fmpPickList.loc[index, "Product Group/Type"]) == "nan":
                 fmpPickList.loc[index, "Product Group/Type"] = Type
+            else:
+                itemsFound.append("Type")
             if str(fmpPickList.loc[index, "Size"]) == "nan":
                 fmpPickList.loc[index, "Size"] = Size
+            else:
+                itemsFound.append("Size")
             if str(fmpPickList.loc[index, "Color"]) == "nan":
                 fmpPickList.loc[index, "Color"] = Color
+            else:
+                itemsFound.append("Color")
+            if thereWasErrorForThisSKU:
+                st.warning(
+                    f"Error Processing {row['ProductID']} | Items not found in MASTER File: {thingsNotFound}")
+                try:
+                    if len(itemsFound) > 0:
+                        st.success(f'But these items were found in Picklist and were filled accordingly: {itemsFound}')
+                        if len(set(thingsNotFound).intersection(itemsFound)) > 0:
+                            st.error(f'One or more Items were not found anywhere, neither in master File nor in Picklist: {",".join(list(set(thingsNotFound).intersection(itemsFound)))}')
+                    else:
+                        st.error(
+                            f'Please check manually as any Items were not even found in the Picklist.', icon="🚨")
+                except:
+                    pass
 
         # st.dataframe(fmpPickList)
+
+        validCustoms = fmpMasterFile["ProductGroupName"].dropna(
+        ).unique().tolist()
+        validCustoms = [x.upper() for x in validCustoms]
+
+        for index, row in fmpPickList.iterrows():
+            if all(custom not in row["Product Group/Type"] for custom in validCustoms):
+                st.warning(f'Possible Non-Custom order, so skipping: {row["ProductID"]}')
+                fmpPickList.drop(index, inplace=True)
 
         fmpPickList.drop(columns=["ProductID"], inplace=True)
 
