@@ -194,6 +194,10 @@ if st.button("Process Picklist"):
             for index, row in fmpPickList.iterrows()
         ]
 
+        validCustoms = fmpMasterFile["ProductGroupName"].dropna(
+        ).unique().tolist()
+        validCustoms = [x.upper() for x in validCustoms]
+
         for index, row in fmpPickList.iterrows():
             st.text(f"Processing {row['ProductID']}")
             fmpMasterFileRow = fmpMasterFile.loc[fmpMasterFile["ProductID"] ==
@@ -235,6 +239,13 @@ if st.button("Process Picklist"):
                 fmpPickList.loc[index, "Color"] = Color
             else:
                 itemsFound.append("Color")
+
+            if all(custom not in row["Product Group/Type"] for custom in validCustoms):
+                st.warning(
+                    f'Possible Non-Custom order, so skipping: {row["ProductID"]}')
+                fmpPickList.drop(index, inplace=True)
+                continue
+            
             if thereWasErrorForThisSKU:
                 st.warning(
                     f"Error Processing {row['ProductID']} | Items not found in MASTER File: {thingsNotFound}")
@@ -250,15 +261,6 @@ if st.button("Process Picklist"):
                     pass
 
         # st.dataframe(fmpPickList)
-
-        validCustoms = fmpMasterFile["ProductGroupName"].dropna(
-        ).unique().tolist()
-        validCustoms = [x.upper() for x in validCustoms]
-
-        for index, row in fmpPickList.iterrows():
-            if all(custom not in row["Product Group/Type"] for custom in validCustoms):
-                st.warning(f'Possible Non-Custom order, so skipping: {row["ProductID"]}')
-                fmpPickList.drop(index, inplace=True)
 
         fmpPickList.drop(columns=["ProductID"], inplace=True)
 
