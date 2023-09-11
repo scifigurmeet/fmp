@@ -296,6 +296,9 @@ if st.button("Process"):
         single_orders_other_sizes_list_neyland = single_orders_other_sizes_list[
             single_orders_other_sizes_list["Type"] == "NEYLAND"]
 
+        single_orders_other_sizes_list = single_orders_other_sizes_list[
+            single_orders_other_sizes_list["Type"] != "NEYLAND"]
+
         single_orders_other_sizes_list_sorted = single_orders_other_sizes_list.sort_values(
             by=[
                 "Type",
