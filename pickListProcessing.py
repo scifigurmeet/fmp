@@ -38,7 +38,8 @@ def to_excel(df, text):
                 first_row = next.iloc[0]
                 next = next.iloc[1:]
                 dfs[xo] = dfs[xo].iloc[1:]
-                curr = curr.append(first_row, ignore_index=True)
+                # curr = curr.append(first_row, ignore_index=True)
+                curr.loc[len(curr)] = first_row
                 last = curr.tail(1).get("OrderID").str.split(",").tolist()
                 first = next.head(1).get("OrderID").str.split(",").tolist()
                 if len(last) > 0 and len(first) > 0:
