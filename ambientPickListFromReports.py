@@ -155,7 +155,7 @@ def processLength(size):
             width = processTheSide(size.split(" ")[0].strip())
         if length == 3:
             if width == 4 or width == 5:
-                return "L"
+                return "S"
         if length < 4 and width < 6:
             return "S"
         else:
