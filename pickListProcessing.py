@@ -243,8 +243,9 @@ if st.button("Process Picklist"):
             else:
                 itemsFound.append("Color")
 
-            if all(str(custom) not in str(row["Product Group/Type"]) for custom in validCustoms):
+            if all(str(custom) not in str(Type) for custom in validCustoms):
                 st.text(row["Product Group/Type"])
+                st.text(Type)
                 st.warning(
                     f'Possible Non-Custom order, so skipping: {row["ProductID"]}')
                 fmpPickList.drop(index, inplace=True)
