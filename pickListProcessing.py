@@ -197,7 +197,7 @@ if st.button("Process Picklist"):
 
         validCustoms = fmpMasterFile["ProductGroupName"].dropna(
         ).unique().tolist()
-        validCustoms = [x.upper() for x in validCustoms]
+        validCustoms = [x.strip().upper() for x in validCustoms]
 
         for index, row in fmpPickList.iterrows():
             st.text(f"Processing {row['ProductID']}")
@@ -241,7 +241,7 @@ if st.button("Process Picklist"):
             else:
                 itemsFound.append("Color")
 
-            if all(str(custom) not in str(Type.upper()) for custom in validCustoms):
+            if str(Type.upper()) not in validCustoms:
                 st.warning(
                     f'Possible Non-Custom order, so skipping: {row["ProductID"]}')
                 fmpPickList.drop(index, inplace=True)
