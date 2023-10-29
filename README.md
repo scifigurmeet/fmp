@@ -1,5 +1,7 @@
 # Automation
 Automatic Pick List Processing
+
+#Thapar Workshop
 Creating a detailed plan with 10,000 words and sample codes for each section of your React and React Native workshop would be quite extensive. I'll provide a more concise outline with explanations and code samples for each section. Feel free to expand on these points as needed during your presentation.
 
 **Session Title:** Introduction to React and React Native
